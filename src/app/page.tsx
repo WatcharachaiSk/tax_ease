@@ -1,7 +1,11 @@
+import HomePage from "@/containers/home-page";
+
+
 export default function Home() {
   return (
     <main>
-      <div>hello word</div>
+      <HomePage />
+      {/* <div>hello word</div> */}
     </main>
   );
 }
