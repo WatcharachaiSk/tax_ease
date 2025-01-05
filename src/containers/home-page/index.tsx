@@ -1,5 +1,5 @@
 import LineWithCustomBullets from "@/components/amcharts/LineWithCustomBullets";
-import TaxCard from "@/components/Cards/TaxCardEx";
+// import TaxCard from "@/components/Cards/TaxCardEx";
 // import TestMotion from "@/components/Motions/testMotion";
 import TableTax from "@/components/Table/tax";
 import React, { FC } from "react";
