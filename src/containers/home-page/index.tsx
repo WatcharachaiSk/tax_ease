@@ -62,46 +62,67 @@ const HomePage: FC = async ({}) => {
           </p>
           <div className="text-start">
             <p className="text-start text-sm font-mono">
-              ยกตัวอย่าง เงินได้ทั้งปี <span className="text-[#2E86C1]">480,000</span>{" "}
+              ยกตัวอย่าง เงินได้ทั้งปี{" "}
+              <span className="text-[#2E86C1]">480,000</span>{" "}
             </p>
             <div className="mb-4">
               {/* <p className="text-lg ">ตัวอย่างการคำนวณ:</p> */}
               <div className="bg-gray-50 p-4 rounded-lg">
-                <p className="text-sm font-mono">รายได้ทั้งปี = <span className="text-[#2E86C1]">480,000</span></p>
                 <p className="text-sm font-mono">
-                  ค่าใช้จ่าย = min(50% ของรายได้, 100,000) = <span className="text-[#E74C3C]"> 100,000 </span>
+                  รายได้ทั้งปี = <span className="text-[#2E86C1]">480,000</span>
                 </p>
-                <p className="text-sm font-mono">ค่าลดหย่อน = <span className="text-[#27AE60]"> 60,000 </span></p>
                 <p className="text-sm font-mono">
-                  รายได้สุทธิ = <span className="text-[#2E86C1]">480,000</span> - <span className="text-[#E74C3C]"> 100,000 </span> - <span className="text-[#27AE60]"> 60,000 </span>
+                  ค่าใช้จ่าย = min(50% ของรายได้, 100,000) ={" "}
+                  <span className="text-[#E74C3C]"> 100,000 </span>
                 </p>
-                <p className="text-sm font-mono">รายได้สุทธิ = <span className="text-[#F39C12]">320,000</span></p>
+                <p className="text-sm font-mono">
+                  ค่าลดหย่อน = <span className="text-[#27AE60]"> 60,000 </span>
+                </p>
+                <p className="text-sm font-mono">
+                  รายได้สุทธิ = <span className="text-[#2E86C1]">480,000</span>{" "}
+                  - <span className="text-[#E74C3C]"> 100,000 </span> -{" "}
+                  <span className="text-[#27AE60]"> 60,000 </span>
+                </p>
+                <p className="text-sm font-mono">
+                  รายได้สุทธิ = <span className="text-[#F39C12]">320,000</span>
+                </p>
               </div>
             </div>
             <div className="mb-4">
-                <p className="text-sm font-mono">การคำนวณภาษี:</p>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                    <p className="text-sm font-mono">150,000 -> ยกเว้นภาษี</p>
-                    <p className="text-sm font-mono">150,001 - 300,000 -> 5% = 7,500</p>
-                    <p className="text-sm font-mono">300,001 - 320,000 -> 10% = 2,000</p>
-                    <p className="text-sm font-mono font-bold">รวมภาษี = 7,500 + 2,000 =  <span className="text-[#C0392B]"> 9,500 </span> </p>
-                </div>
+              <p className="text-sm font-mono">การคำนวณภาษี:</p>
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <p className="text-sm font-mono">150,000 {"->"} ยกเว้นภาษี</p>
+                <p className="text-sm font-mono">
+                  150,001 - 300,000 {"->"} 5% = 7,500
+                </p>
+                <p className="text-sm font-mono">
+                  300,001 - 320,000 {"->"} 10% = 2,000
+                </p>
+                <p className="text-sm font-mono font-bold">
+                  รวมภาษี = 7,500 + 2,000 ={" "}
+                  <span className="text-[#C0392B]"> 9,500 </span>{" "}
+                </p>
+              </div>
             </div>
             <div className="text-center mt-4">
-                <p className="text-2xl font-bold text-[#C0392B]">ภาษีที่ต้องชำระ: 9,500 บาท</p>
+              <p className="text-2xl font-bold text-[#C0392B]">
+                ภาษีที่ต้องชำระ: 9,500 บาท
+              </p>
             </div>
           </div>
         </div>
       </div>
       {/* <TaxCard /> */}
       <a
-          type="button"
-          className="text-3xl py-1 px-6 me-2 mb-2 font-medium text-gray-900 focus:outline-none bg-white rounded-xl border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 "
-        >
-          ✨ เริ่มต้นคำนวณภาษีของคุณกันเถอะ!
-        </a>
-        <p>มาแปลงรายได้ให้ “เห็นภาพ” 🚀
-        แค่กรอกข้อมูล แล้วปล่อยให้ระบบจัดการส่วนที่เหลือ! 💼</p>
+        type="button"
+        className="text-3xl py-1 px-6 me-2 mb-2 font-medium text-gray-900 focus:outline-none bg-white rounded-xl border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 "
+      >
+        ✨ เริ่มต้นคำนวณภาษีของคุณกันเถอะ!
+      </a>
+      <p>
+        มาแปลงรายได้ให้ “เห็นภาพ” 🚀 แค่กรอกข้อมูล
+        แล้วปล่อยให้ระบบจัดการส่วนที่เหลือ! 💼
+      </p>
     </div>
   );
 };

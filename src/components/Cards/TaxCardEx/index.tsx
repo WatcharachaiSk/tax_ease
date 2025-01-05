@@ -29,9 +29,9 @@ const TaxCard: FC = () => {
             <div className="mb-4">
                 <p className="text-lg ">การคำนวณภาษี:</p>
                 <div className="bg-gray-50 p-4 rounded-lg">
-                    <p className="text-sm font-mono">150,000 -> ยกเว้นภาษี</p>
-                    <p className="text-sm font-mono">150,001 - 300,000 -> 5% = 7,500</p>
-                    <p className="text-sm font-mono">300,001 - 320,000 -> 10% = 2,000</p>
+                    <p className="text-sm font-mono">150,000 {'->'} ยกเว้นภาษี</p>
+                    <p className="text-sm font-mono">150,001 - 300,000 {'->'} 5% = 7,500</p>
+                    <p className="text-sm font-mono">300,001 - 320,000 {'->'} 10% = 2,000</p>
                     <p className="text-sm font-mono font-bold">รวมภาษี = 7,500 + 2,000 = 9,500</p>
                 </div>
             </div>
