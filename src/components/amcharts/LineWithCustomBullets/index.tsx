@@ -120,11 +120,19 @@ const LineWithCustomBullets: React.FC = () => {
     });
 
     series.columns.template.adapters.add("fill", (fill, target) => {
-      return chart.get("colors").getIndex(series.columns.indexOf(target));
+      const colors = chart.get("colors");
+      const index = colors
+        ? colors.getIndex(series.columns.indexOf(target))
+        : undefined;
+      return index;
     });
 
     series.columns.template.adapters.add("stroke", (stroke, target) => {
-      return chart.get("colors").getIndex(series.columns.indexOf(target));
+      const colors = chart.get("colors");
+      const index = colors
+        ? colors.getIndex(series.columns.indexOf(target))
+        : undefined;
+      return index;
     });
 
     series.bullets.push(function () {
