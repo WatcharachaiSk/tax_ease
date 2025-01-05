@@ -6,6 +6,7 @@ export default function Home() {
     <main>
       <HomePage />
       {/* <div>hello word</div> */}
+      <div className="mb-20"></div>
     </main>
   );
 }

@@ -1,8 +1,8 @@
 import React, { FC } from "react";
 
-interface ExProps {}
+// interface ExProps {} || any
 
-const Ex: FC<ExProps> = async ({}) => {
+const Ex: FC = async ({}) => {
   return (
     <div className="">
       <div></div>
