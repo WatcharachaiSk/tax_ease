@@ -6,10 +6,10 @@ import React, { FC } from "react";
 const TableTax: FC = async ({}) => {
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-      <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-        <thead className="text-xl text-gray-700 uppercase dark:text-gray-400">
+      <table className="w-full text-sm text-left rtl:text-right text-gray-500 ">
+        <thead className="text-xl text-gray-700 uppercase ">
           <tr className="">
-            <th scope="col" className="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+            <th scope="col" className="px-6 py-3 bg-gray-50 ">
               รายได้สุทธิ (บาท)
             </th>
             <th scope="col" className="px-6 py-3">
@@ -26,7 +26,7 @@ const TableTax: FC = async ({}) => {
               >
                 <th
                   scope="row"
-                  className="px-10 py-1 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800"
+                  className="px-10 py-1 font-medium text-gray-900 whitespace-nowrap bg-gray-50"
                 >
                   {item.range}
                 </th>
