@@ -1,71 +1,27 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import * as am5 from "@amcharts/amcharts5";
-import * as am5xy from "@amcharts/amcharts5/xy";
-import * as am5radar from "@amcharts/amcharts5/radar";
-import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
+// import * as am5 from "@amcharts/amcharts5";
+// import * as am5xy from "@amcharts/amcharts5/xy";
+// import * as am5radar from "@amcharts/amcharts5/radar";
+// import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 
 import React, { FC } from "react";
+import {
+  calculatePercentage,
+  calculatePercentageNumber,
+  formattedNumber,
+} from "@/utils/formattedNumber";
 
-const data = [
-  {
-    category: "0 - 150,000",
-    value: 0,
-    full: 500,
-    columnSettings: { fill: am5.color(0x84c1ff) },
-  },
-  {
-    category: "150,001 - 300,000",
-    value: 5,
-    full: 7500,
-    columnSettings: { fill: am5.color(0x66bb6a) },
-  },
-  {
-    category: "300,001 - 500,000",
-    value: 10,
-    full: 20000,
-    columnSettings: { fill: am5.color(0xffa726) },
-  },
-  {
-    category: "500,001 - 750,000",
-    value: 15,
-    full: 37500,
-    columnSettings: { fill: am5.color(0xef5350) },
-  },
-  {
-    category: "750,001 - 1,000,000",
-    value: 20,
-    full: 50000,
-    columnSettings: { fill: am5.color(0xab47bc) },
-  },
-  {
-    category: "1,000,001 - 2,000,000",
-    value: 25,
-    full: 250000,
-    columnSettings: { fill: am5.color(0x29b6f6) },
-  },
-  {
-    category: "2,000,001 - 5,000,000",
-    value: 30,
-    full: 900000,
-    columnSettings: { fill: am5.color(0x18909c) },
-  },
-  {
-    category: "5,000,001 ขึ้นไป",
-    value: 35,
-    full: 10000000,
-    columnSettings: { fill: am5.color(0xff7743) },
-  },
-];
 
-const SVGPictorialChart: FC = ({}) => {
+const ChartInput: FC = ({}) => {
+  const [lastIncome, setLastIncome] = useState<number>(0);
   const [income, setIncome] = useState<number>(350000);
   const [income1, setIncome1] = useState<number>(350000);
   const [income2, setIncome2] = useState<number>(10000);
   const [income8, setIncome8] = useState<number>(10000);
   //
-  const [chartData, setChartData] = useState(data);
+  // const [chartData, setChartData] = useState(data);
 
   //   useEffect(() => {
   //     const root = am5.Root.new("chartdiv1");
@@ -182,6 +138,15 @@ const SVGPictorialChart: FC = ({}) => {
   //     };
   //   }, [chartData]);
 
+  useEffect(() => {
+    setIncome(income1 + income2 + income8);
+    setLastIncome(
+      calculatePercentageNumber(income1, 1) +
+        calculatePercentageNumber(income2, 2) +
+        calculatePercentageNumber(income8, 8)
+    );
+  }, [income1, income2, income8]);
+
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     isIncome: 1 | 2 | 8
@@ -194,8 +159,6 @@ const SVGPictorialChart: FC = ({}) => {
     } else if (isIncome == 8) {
       setIncome8(inputIncome);
     }
-    setIncome(income1 + income2 + income8);
-
     // const updatedData = data.map((item) => {
     //   return {
     //     ...item,
@@ -210,13 +173,13 @@ const SVGPictorialChart: FC = ({}) => {
   return (
     <div className="w-full text-2xl">
       <form className=" bg-gray-50 p-4 rounded-lg">
-        <div className="flex flex-row w-full gap-2 mb-6">
-          <div className="flex-1">Chart</div>
+        <div className="flex md:flex-row xl:flex-row flex-col-reverse w-full gap-2 mb-6">
+          <div className="flex-1">กำลังพัฒนา</div>
           <div className="flex-1 flex flex-col gap-y-2">
             <p className="text-end mb-2 text-gray-900 ">
               รายได้ทั้งปี{" "}
               <span className="text-3xl font-bold text-[#2E86C1] bg-blue-50 rounded-md">
-                {income}
+                {formattedNumber(income)}
               </span>{" "}
               บาท
             </p>
@@ -256,7 +219,9 @@ const SVGPictorialChart: FC = ({}) => {
             <div className="flex flex-row items-center gap-x-1">
               {/*  */}
               <div className="basis-3/4 flex flex-col ">
-                <label className="">ฟรีแลนซ์/ทั้งปี</label>
+                <label className="">
+                  ฟรีแลนซ์/<span className="text-lg text-gray-500">ทั้งปี</span>
+                </label>
                 <input
                   id="default-range"
                   type="range"
@@ -288,7 +253,9 @@ const SVGPictorialChart: FC = ({}) => {
             <div className="flex flex-row items-center gap-x-1">
               {/*  */}
               <div className="basis-3/4 flex flex-col ">
-                <label className="">ขายของ/ทั้งปี</label>
+                <label className="">
+                  ขายของ/<span className="text-lg text-gray-500">ทั้งปี</span>
+                </label>
                 <input
                   id="default-range"
                   type="range"
@@ -316,16 +283,144 @@ const SVGPictorialChart: FC = ({}) => {
                 />
               </div>
             </div>
+            {/*  */}
+            <div>
+              <p className="text-center">
+                เมื่อคำนวณ
+                <span className="text-[#2E86C1] bg-blue-50 rounded-md">
+                  เงินได้
+                </span>
+                แล้ว ต้องหัก
+                <span className="text-[#E74C3C] bg-red-50 rounded-md">
+                  ค่าใช้จ่าย
+                </span>
+                ตามอัตราที่ต่างกันในแต่ละประเภท:
+              </p>
+              {/*  */}
+              <div>
+                <div className="flex justify-between">
+                  <p>
+                    <span className="text-[#2E86C1] bg-blue-50 rounded-md">
+                      เงินเดือน
+                    </span>{" "}
+                    จัดอยู่ใน
+                    <span className="font-bold ">“เงินได้ประเภทที่ 1”</span>
+                  </p>
+                  <p className="text-end">
+                    หลังหัก:{" "}
+                    <span className="text-3xl font-bold bg-sky-50 rounded-md">
+                      {calculatePercentage(income1, 1)}
+                    </span>{" "}
+                    บาท
+                  </p>
+                </div>
+                <p className="indent-3 text-xl">
+                  หักเหมาจ่าย{" "}
+                  <span className="text-[#E74C3C] bg-red-50 rounded-md">
+                    50%
+                  </span>{" "}
+                  ของเงินเดือน
+                </p>
+                <p className=" text-xl text-gray-500">
+                  (สูงสุดไม่เกิน{" "}
+                  <span className="text-[#E74C3C] bg-red-50 rounded-md">
+                    100,000
+                  </span>{" "}
+                  บาท)
+                </p>
+              </div>
+              {/*  */}
+              <div>
+                <div className="flex justify-between">
+                  <p>
+                    <span className="text-[#2E86C1] bg-blue-50 rounded-md">
+                      ฟรีแลนซ์
+                    </span>{" "}
+                    จัดอยู่ใน
+                    <span className="font-bold ">“เงินได้ประเภทที่ 2”</span>
+                  </p>
+                  <p className="text-end">
+                    หลังหัก:{" "}
+                    <span className="text-3xl font-bold bg-sky-50 rounded-md">
+                      {calculatePercentage(income2, 2)}
+                    </span>{" "}
+                    บาท
+                  </p>
+                </div>
+                <p className="indent-3 text-xl">
+                  หักเหมาจ่าย{" "}
+                  <span className="text-[#E74C3C] bg-red-50 rounded-md">
+                    50%
+                  </span>{" "}
+                  ของเงินฟรีแลนซ์
+                </p>
+                <p className=" text-xl text-gray-500">
+                  (สูงสุดไม่เกิน{" "}
+                  <span className="text-[#E74C3C] bg-red-50 rounded-md">
+                    100,000
+                  </span>{" "}
+                  บาท)
+                </p>
+              </div>
+              {/*  */}
+              <div>
+                <div className="flex justify-between">
+                  <p>
+                    <span className="text-[#2E86C1] bg-blue-50 rounded-md">
+                      การขายสินค้า
+                    </span>{" "}
+                    จัดอยู่ใน
+                    <span className="font-bold">“เงินได้ประเภทที่ 8”</span>
+                  </p>
+                  <p className="text-end">
+                    หลังหัก:{" "}
+                    <span className="text-3xl font-bold bg-sky-50 rounded-md">
+                      {calculatePercentage(income8, 8)}
+                    </span>{" "}
+                    บาท
+                  </p>
+                </div>
+                <p className="indent-3 text-xl">
+                  หัก{" "}
+                  <span className="text-[#E74C3C] bg-red-50 rounded-md">
+                    60%
+                  </span>{" "}
+                  ของเงินการขายสินค้า
+                </p>
+                <p className=" text-xl text-gray-500">
+                  ( หรือตามจริง{" "}
+                  <span className="text-[#E74C3C] bg-red-50 rounded-md">
+                    ต้องมีหลักฐาน
+                  </span>{" "}
+                  )
+                </p>
+              </div>
+              {/*  */}
+              <div>
+                <div className="flex justify-end">
+                  <p className="text-end">
+                    <span className="font-bold ">รายได้หลังหักค่าใช้จ่าย</span> ={" "}
+                    <span className="text-3xl text-[#2E86C1] font-bold bg-sky-50 rounded-md">
+                      {formattedNumber(lastIncome)}
+                    </span>{" "}
+                    บาท
+                  </p>
+                </div>
+              </div>
+            </div>
+            {/*  */}
           </div>
         </div>
 
-        <div className="flex  justify-end">
-          <button
+        {/*  */}
+
+        <div className="flex justify-end">
+          {/* <button
             // type="submit"
             className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg w-full sm:w-auto px-5 py-2.5 text-center "
           >
             ต่อไป
-          </button>
+          </button> */}
         </div>
       </form>
 
@@ -334,4 +429,4 @@ const SVGPictorialChart: FC = ({}) => {
   );
 };
 
-export default SVGPictorialChart;
+export default ChartInput;

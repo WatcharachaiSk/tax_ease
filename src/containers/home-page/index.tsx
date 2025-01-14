@@ -1,5 +1,5 @@
 import LineWithCustomBullets from "@/components/amcharts/LineWithCustomBullets";
-import SVGPictorialChart from "@/components/amcharts/SVGPictorialChart";
+import ChartInput from "@/components/amcharts/ChartInput";
 // import TaxCard from "@/components/Cards/TaxCardEx";
 // import TestMotion from "@/components/Motions/testMotion";
 import TableTax from "@/components/Table/tax";
@@ -124,7 +124,7 @@ const HomePage: FC = async ({}) => {
         มาแปลงรายได้ให้ “เห็นภาพ” 🚀 แค่กรอกข้อมูล
         แล้วปล่อยให้ระบบจัดการส่วนที่เหลือ! 💼
       </p>
-      <SVGPictorialChart />
+      <ChartInput />
     </div>
   );
 };
