@@ -7,19 +7,33 @@ import { useEffect, useState } from "react";
 // import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 
 import React, { FC } from "react";
+import { formattedNumber } from "@/utils/formattedNumber";
+import { DEDUCTION } from "@/constants/tax";
 import {
   calculatePercentage,
   calculatePercentageNumber,
-  formattedNumber,
-} from "@/utils/formattedNumber";
-
+  calculateTaxDetails,
+} from "@/utils/calculate";
+import { TaxCalculationResult } from "@/types/tex";
 
 const ChartInput: FC = ({}) => {
   const [lastIncome, setLastIncome] = useState<number>(0);
+  //
   const [income, setIncome] = useState<number>(350000);
   const [income1, setIncome1] = useState<number>(350000);
-  const [income2, setIncome2] = useState<number>(10000);
-  const [income8, setIncome8] = useState<number>(10000);
+  const [income2, setIncome2] = useState<number>(0);
+  const [income8, setIncome8] = useState<number>(0);
+  //
+  const [deduction, setDeduction] = useState<number>(DEDUCTION);
+  //
+  const [expenses, setExpenses] = useState<number>(0);
+  const [expenses1, setExpenses1] = useState<number>(0);
+  const [expenses2, setExpenses2] = useState<number>(0);
+  const [expenses8, setExpenses8] = useState<number>(0);
+  //
+  const [taxDetails, setTaxDetails] = useState<
+    TaxCalculationResult | undefined
+  >();
   //
   // const [chartData, setChartData] = useState(data);
 
@@ -145,19 +159,36 @@ const ChartInput: FC = ({}) => {
         calculatePercentageNumber(income2, 2) +
         calculatePercentageNumber(income8, 8)
     );
+    setExpenses(
+      calculatePercentage(income1, 1) +
+        calculatePercentage(income2, 2) +
+        calculatePercentage(income8, 8)
+    );
+    setExpenses1(calculatePercentage(income1, 1));
+    setExpenses2(calculatePercentage(income2, 2));
+    setExpenses8(calculatePercentage(income8, 8));
   }, [income1, income2, income8]);
+  useEffect(() => {
+    // console.log(
+    //   "calculateTaxDetails(lastIncome) is ",
+    //   calculateTaxDetails(lastIncome - deduction)
+    // );
+    setTaxDetails(calculateTaxDetails(lastIncome - deduction));
+  }, [lastIncome, deduction]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement>,
-    isIncome: 1 | 2 | 8
+    isInput: 1 | 2 | 8 | "d"
   ) => {
-    const inputIncome = parseInt(e.target.value) || 0;
-    if (isIncome == 1) {
-      setIncome1(inputIncome);
-    } else if (isIncome == 2) {
-      setIncome2(inputIncome);
-    } else if (isIncome == 8) {
-      setIncome8(inputIncome);
+    const inputValue = parseInt(e.target.value) || 0;
+    if (isInput == 1) {
+      setIncome1(inputValue);
+    } else if (isInput == 2) {
+      setIncome2(inputValue);
+    } else if (isInput == 8) {
+      setIncome8(inputValue);
+    } else if (isInput == "d") {
+      setDeduction(inputValue <= DEDUCTION ? DEDUCTION : inputValue);
     }
     // const updatedData = data.map((item) => {
     //   return {
@@ -178,7 +209,7 @@ const ChartInput: FC = ({}) => {
           <div className="flex-1 flex flex-col gap-y-2">
             <p className="text-end mb-2 text-gray-900 ">
               รายได้ทั้งปี{" "}
-              <span className="text-3xl font-bold text-[#2E86C1] bg-blue-50 rounded-md">
+              <span className="text-3xl text-[#2E86C1] font-bold bg-blue-50 rounded-md">
                 {formattedNumber(income)}
               </span>{" "}
               บาท
@@ -189,7 +220,7 @@ const ChartInput: FC = ({}) => {
               <div className="basis-3/4 flex flex-col ">
                 <label className="">เงินเดือนทั้งปี (รวมโบนัส)</label>
                 <input
-                  id="default-range"
+                  id="income-range-1"
                   type="range"
                   value={income1}
                   onChange={(e) => {
@@ -203,7 +234,7 @@ const ChartInput: FC = ({}) => {
               {/*  */}
               <div className="basis-1/4">
                 <input
-                  id="income"
+                  id="income-number-1"
                   type="number"
                   value={income1}
                   onChange={(e) => {
@@ -223,7 +254,7 @@ const ChartInput: FC = ({}) => {
                   ฟรีแลนซ์/<span className="text-lg text-gray-500">ทั้งปี</span>
                 </label>
                 <input
-                  id="default-range"
+                  id="income-range-2"
                   type="range"
                   value={income2}
                   onChange={(e) => {
@@ -237,7 +268,7 @@ const ChartInput: FC = ({}) => {
               {/*  */}
               <div className="basis-1/4">
                 <input
-                  id="income"
+                  id="income-number-2"
                   type="number"
                   value={income2}
                   onChange={(e) => {
@@ -257,7 +288,7 @@ const ChartInput: FC = ({}) => {
                   ขายของ/<span className="text-lg text-gray-500">ทั้งปี</span>
                 </label>
                 <input
-                  id="default-range"
+                  id="income-range-8"
                   type="range"
                   value={income8}
                   onChange={(e) => {
@@ -266,12 +297,12 @@ const ChartInput: FC = ({}) => {
                   max={6000000}
                   min={0}
                   className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer "
-                ></input>
+                />
               </div>
               {/*  */}
               <div className="basis-1/4">
                 <input
-                  id="income"
+                  id="income-number-8"
                   type="number"
                   value={income8}
                   onChange={(e) => {
@@ -307,9 +338,9 @@ const ChartInput: FC = ({}) => {
                     <span className="font-bold ">“เงินได้ประเภทที่ 1”</span>
                   </p>
                   <p className="text-end">
-                    หลังหัก:{" "}
-                    <span className="text-3xl font-bold bg-sky-50 rounded-md">
-                      {calculatePercentage(income1, 1)}
+                    หักได้:{" "}
+                    <span className="text-3xl font-bold bg-sky-50 text-[#C0392B] rounded-md">
+                      {formattedNumber(expenses1)}
                     </span>{" "}
                     บาท
                   </p>
@@ -340,9 +371,9 @@ const ChartInput: FC = ({}) => {
                     <span className="font-bold ">“เงินได้ประเภทที่ 2”</span>
                   </p>
                   <p className="text-end">
-                    หลังหัก:{" "}
-                    <span className="text-3xl font-bold bg-sky-50 rounded-md">
-                      {calculatePercentage(income2, 2)}
+                    หักได้:{" "}
+                    <span className="text-3xl font-bold bg-sky-50 text-[#C0392B] rounded-md">
+                      {formattedNumber(expenses2)}
                     </span>{" "}
                     บาท
                   </p>
@@ -373,9 +404,9 @@ const ChartInput: FC = ({}) => {
                     <span className="font-bold">“เงินได้ประเภทที่ 8”</span>
                   </p>
                   <p className="text-end">
-                    หลังหัก:{" "}
-                    <span className="text-3xl font-bold bg-sky-50 rounded-md">
-                      {calculatePercentage(income8, 8)}
+                    หักได้:{" "}
+                    <span className="text-3xl font-bold bg-sky-50 text-[#C0392B] rounded-md">
+                      {formattedNumber(expenses8)}
                     </span>{" "}
                     บาท
                   </p>
@@ -399,8 +430,9 @@ const ChartInput: FC = ({}) => {
               <div>
                 <div className="flex justify-end">
                   <p className="text-end">
-                    <span className="font-bold ">รายได้หลังหักค่าใช้จ่าย</span> ={" "}
-                    <span className="text-3xl text-[#2E86C1] font-bold bg-sky-50 rounded-md">
+                    <span className="font-bold ">รายได้หลังหักค่าใช้จ่าย</span>{" "}
+                    ={" "}
+                    <span className="text-3xl  font-bold bg-sky-50 rounded-md">
                       {formattedNumber(lastIncome)}
                     </span>{" "}
                     บาท
@@ -409,6 +441,136 @@ const ChartInput: FC = ({}) => {
               </div>
             </div>
             {/*  */}
+            <div className="mt-3">
+              <p>
+                นอกจาก
+                <span className="text-[#2E86C1] bg-sky-50 rounded-md">
+                  ค่าใช้จ่าย
+                </span>
+                แล้ว ยังหัก
+                <span className="text-[#27AE60] bg-green-50 rounded-md">
+                  ค่าลดหย่อน
+                </span>
+                ได้ เช่น ค่าลดหย่อนส่วนตัว{" "}
+                <span className="text-[#27AE60] bg-green-50 rounded-md">
+                  60,000
+                </span>
+                บาท หรือ การบริจาค ประกันสังคม เบี้ยประกัน และอื่นๆ.
+              </p>
+            </div>
+            {/*  */}
+            <div className="flex flex-row items-center gap-x-1">
+              {/*  */}
+              <div className="basis-3/4 flex flex-col ">
+                <label className="">ค่าลดหย่อน </label>
+                <input
+                  id="income-range-1"
+                  type="range"
+                  value={deduction}
+                  onChange={(e) => {
+                    handleInputChange(e, "d");
+                  }}
+                  max={6000000}
+                  min={0}
+                  className="w-full accent-[#27AE60] h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer "
+                ></input>
+              </div>
+              {/*  */}
+              <div className="basis-1/4">
+                <input
+                  id="income-number-1"
+                  type="number"
+                  value={deduction}
+                  onChange={(e) => {
+                    handleInputChange(e, "d");
+                  }}
+                  className="bg-gray-50 border border-gray-300 text-gray-900  rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2"
+                  placeholder="รายได้รวมทั้งปี"
+                  required
+                />
+              </div>
+            </div>
+            {/*  */}
+            <div className="flex justify-end">
+              <p className="text-end">
+                <span className="font-bold ">ลดหย่อน</span> ={" "}
+                <span className="text-3xl text-[#27AE60] font-bold bg-green-50 rounded-md">
+                  {formattedNumber(deduction)}
+                </span>{" "}
+                บาท
+              </p>
+            </div>
+            {/*  */}
+            <div className="mt-3">
+              <p className="text-center">
+                จากสูตรนี้
+                <br />
+                <span className="text-3xl">
+                  <span className="text-[#F39C12]">รายได้สุทธิ</span> =
+                  <span className="text-[#2E86C1]"> รายได้ </span> -
+                  <span className="text-[#E74C3C]"> ค่าใช้จ่าย </span> −
+                  <span className="text-[#27AE60]"> ค่าลดหย่อน </span>
+                </span>
+                <br />
+                <span className="text-3xl">
+                  <span className="text-[#F39C12]">
+                    {formattedNumber(lastIncome - deduction)}
+                  </span>{" "}
+                  =
+                  <span className="text-[#2E86C1]">
+                    {" "}
+                    {formattedNumber(income)}{" "}
+                  </span>{" "}
+                  -
+                  <span className="text-[#E74C3C]">
+                    {" "}
+                    {formattedNumber(expenses)}{" "}
+                  </span>{" "}
+                  −
+                  <span className="text-[#27AE60]">
+                    {" "}
+                    {formattedNumber(deduction)}{" "}
+                  </span>
+                </span>
+              </p>
+            </div>
+            {taxDetails != undefined && (
+              <div className="mb-4">
+                <p className="text-sm font-mono">การคำนวณภาษี:</p>
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  {taxDetails.details.map((item, idx) => {
+                    return (
+                      <div key={idx}>
+                        <p className="text-sm font-mono">
+                          {item.range}{" "}
+                          {item.paid == 0
+                            ? "ยกเว้นภาษี"
+                            : formattedNumber(item.paid)}
+                        </p>
+                        {/* {taxDetails.details.length - 1 == idx && (
+                          <p className="text-sm font-mono font-bold">
+                            รวมภาษี ={" "}
+                            {taxDetails.details.map((itemP, idxP) => {
+                              return (
+                                <span key={idxP}>
+                                  {itemP.paid != 0 && itemP.paid} +
+                                </span>
+                              );
+                            })}{" "}
+                            =<span className="text-[#C0392B]"> 9,500 </span>
+                          </p>
+                        )} */}
+                      </div>
+                    );
+                  })}
+                </div>
+                <div className="text-center mt-4">
+                  <p className="text-3xl font-bold text-[#C0392B]">
+                    ภาษีที่ต้องชำระ: {formattedNumber(taxDetails.sum)} บาท
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 

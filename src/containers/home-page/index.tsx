@@ -77,7 +77,8 @@ const HomePage: FC = async ({}) => {
                   <span className="text-[#E74C3C]"> 100,000 </span>
                 </p>
                 <p className="text-sm font-mono">
-                  ค่าลดหย่อน = <span className="text-[#27AE60]"> 60,000 </span>
+                  ค่าลดหย่อน: ซึ่งทุกคนจะได้หัก “ค่าลดหย่อนส่วนตัว” ทันที 60,000
+                  บาท! = <span className="text-[#27AE60]"> 60,000 </span>
                 </p>
                 <p className="text-sm font-mono">
                   รายได้สุทธิ = <span className="text-[#2E86C1]">480,000</span>{" "}

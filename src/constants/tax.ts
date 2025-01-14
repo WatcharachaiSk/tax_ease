@@ -76,3 +76,5 @@ export const TAX = {
     },
   ],
 };
+
+export const DEDUCTION = 60000;
