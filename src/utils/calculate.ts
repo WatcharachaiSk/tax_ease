@@ -1,4 +1,9 @@
-import { TaxBracket, TaxCalculationResult, TaxDetail } from "@/types/tex";
+import {
+  ChartData,
+  TaxBracket,
+  TaxCalculationResult,
+  TaxDetail,
+} from "@/types/tex";
 // import { formattedNumber } from "./formattedNumber";
 
 const brackets: TaxBracket[] = [
@@ -46,6 +51,7 @@ export const calculatePercentageNumber = (
 
 export const calculateTaxDetails = (income: number): TaxCalculationResult => {
   const taxDetails: TaxDetail[] = [];
+  const chartData: ChartData[] = [];
   let previousMax = 0;
   let sum = 0;
 
@@ -60,6 +66,10 @@ export const calculateTaxDetails = (income: number): TaxCalculationResult => {
         currentBracket.rate * 100
       ).toFixed(0)}% = `;
       taxDetails.push({ range: rangeWithRate, paid });
+      chartData.push({
+        category: `${rangeWithRate} = ${paid.toLocaleString()}`,
+        value: paid,
+      });
       sum += paid;
       previousMax = max;
     } else {
@@ -68,12 +78,16 @@ export const calculateTaxDetails = (income: number): TaxCalculationResult => {
         currentBracket.rate * 100
       ).toFixed(0)}% = `;
       taxDetails.push({ range: rangeWithRate, paid });
+      chartData.push({
+        category: `${rangeWithRate} = ${paid.toLocaleString()}`,
+        value: paid,
+      });
       sum += paid;
       break;
     }
   }
 
-  return { details: taxDetails, sum };
+  return { details: taxDetails, sum, chartData };
 };
 
 function parseRange(range: string): [number, number] {

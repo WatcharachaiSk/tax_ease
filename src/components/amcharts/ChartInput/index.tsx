@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
-// import * as am5 from "@amcharts/amcharts5";
-// import * as am5xy from "@amcharts/amcharts5/xy";
-// import * as am5radar from "@amcharts/amcharts5/radar";
-// import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
+import { useEffect, useRef, useState } from "react";
+import * as am5 from "@amcharts/amcharts5";
+import * as am5percent from "@amcharts/amcharts5/percent";
+import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 
 import React, { FC } from "react";
 import { formattedNumber } from "@/utils/formattedNumber";
@@ -19,8 +18,8 @@ import { TaxCalculationResult } from "@/types/tex";
 const ChartInput: FC = ({}) => {
   const [lastIncome, setLastIncome] = useState<number>(0);
   //
-  const [income, setIncome] = useState<number>(350000);
-  const [income1, setIncome1] = useState<number>(350000);
+  const [income, setIncome] = useState<number>(0);
+  const [income1, setIncome1] = useState<number>(0);
   const [income2, setIncome2] = useState<number>(0);
   const [income8, setIncome8] = useState<number>(0);
   //
@@ -31,126 +30,65 @@ const ChartInput: FC = ({}) => {
   const [expenses2, setExpenses2] = useState<number>(0);
   const [expenses8, setExpenses8] = useState<number>(0);
   //
-  const [taxDetails, setTaxDetails] = useState<
-    TaxCalculationResult | undefined
-  >();
+  const [taxDetails, setTaxDetails] = useState<TaxCalculationResult>();
   //
+
+  // Chart
+  const chartRef = useRef<HTMLDivElement>(null);
   // const [chartData, setChartData] = useState(data);
+  useEffect(() => {
+    if (!chartRef.current) return;
 
-  //   useEffect(() => {
-  //     const root = am5.Root.new("chartdiv1");
+    const root = am5.Root.new(chartRef.current);
+    root.setThemes([am5themes_Animated.new(root)]);
 
-  //     root.setThemes([am5themes_Animated.new(root)]);
+    const chart = root.container.children.push(
+      am5percent.SlicedChart.new(root, {
+        layout: root.verticalLayout,
+      })
+    );
 
-  //     const chart = root.container.children.push(
-  //       am5radar.RadarChart.new(root, {
-  //         panX: false,
-  //         panY: false,
-  //         wheelX: "panX",
-  //         wheelY: "zoomX",
-  //         innerRadius: am5.percent(30),
-  //         startAngle: -180,
-  //         endAngle: 0,
-  //       })
-  //     );
+    const series = chart.series.push(
+      am5percent.PyramidSeries.new(root, {
+        orientation: "vertical",
+        valueField: "value",
+        categoryField: "category",
+      })
+    );
 
-  //     const cursor = chart.set(
-  //       "cursor",
-  //       am5radar.RadarCursor.new(root, {
-  //         behavior: "zoomX",
-  //       })
-  //     );
+    const data =
+      taxDetails?.chartData && taxDetails.chartData.length > 0
+        ? taxDetails.chartData
+        : [];
 
-  //     cursor.lineY.set("visible", false);
+    series.data.setAll(data);
 
-  //     const xRenderer = am5radar.AxisRendererCircular.new(root, {});
-  //     xRenderer.labels.template.setAll({ radius: 10 });
-  //     xRenderer.grid.template.setAll({ forceHidden: true });
+    // เพิ่ม Title แสดงผลรวม
+    chart.children.unshift(
+      am5.Label.new(root, {
+        text: `ภาษีที่ต้องชำระ: ${taxDetails?.sum.toLocaleString()}`,
+        fontSize: 20,
+        textAlign: "center",
+        x: am5.percent(50),
+        centerX: am5.percent(50),
+        paddingTop: 10,
+      })
+    );
 
-  //     const yRenderer = am5radar.AxisRendererRadial.new(root, {
-  //       minGridDistance: 20,
-  //     });
-  //     yRenderer.labels.template.setAll({
-  //       centerX: am5.p100,
-  //       fontWeight: "500",
-  //       fontSize: 12,
-  //       templateField: "columnSettings",
-  //       rotation: 10, // หมุนตัวหนังสือให้เป็นแนวนอน
-  //       //   horizontalCenter: "right", // จัดตัวหนังสือไปที่ขวา
-  //       //   verticalCenter: "middle", // จัดตำแหน่งในแนวตั้ง
-  //     });
-  //     yRenderer.grid.template.setAll({ forceHidden: true });
+    series.labels.template.setAll({
+      fontSize: 14,
+      fontWeight: "bold",
+    });
 
-  //     const yAxis = chart.yAxes.push(
-  //       am5xy.CategoryAxis.new(root, {
-  //         categoryField: "category",
-  //         renderer: yRenderer,
-  //       })
-  //     );
-  //     yAxis.data.setAll(chartData);
+    series.appear();
 
-  //     // สร้าง series สำหรับแต่ละ item โดยใช้ max จาก `full` ของแต่ละ item
-  //     chartData.forEach((item) => {
-  //       const maxFull = item.full; // กำหนด max ตามค่าจาก `full` ของแต่ละ item
+    // legend.data.setAll(am5.array.copy(series.dataItems).reverse());
+    chart.appear(1000, 100);
 
-  //       const xAxis = chart.xAxes.push(
-  //         am5xy.ValueAxis.new(root, {
-  //           renderer: xRenderer,
-  //           strictMinMax: false,
-  //           max: maxFull, // กำหนด max ตามค่าของแต่ละ item
-  //           tooltip: am5.Tooltip.new(root, {}),
-  //         })
-  //       );
-
-  //       // สร้าง series สำหรับแต่ละ item
-  //       const series = chart.series.push(
-  //         am5radar.RadarColumnSeries.new(root, {
-  //           xAxis,
-  //           yAxis,
-  //           clustered: false,
-  //           valueXField: "full",
-  //           categoryYField: "category",
-  //           fill: item.columnSettings.fill, // ใช้ fill จากแต่ละ item
-  //         })
-  //       );
-
-  //       series.columns.template.setAll({
-  //         width: am5.p100,
-  //         fillOpacity: 0.08,
-  //         strokeOpacity: 0,
-  //         cornerRadius: 20,
-  //       });
-
-  //       series.data.setAll([item]);
-
-  //       // สามารถเพิ่ม series สำหรับ value ได้ตามต้องการ
-  //       const seriesValue = chart.series.push(
-  //         am5radar.RadarColumnSeries.new(root, {
-  //           xAxis,
-  //           yAxis,
-  //           clustered: false,
-  //           valueXField: "value",
-  //           categoryYField: "category",
-  //         })
-  //       );
-
-  //       seriesValue.columns.template.setAll({
-  //         width: am5.p100,
-  //         strokeOpacity: 0,
-  //         tooltipText: "{category}: {valueX}",
-  //         cornerRadius: 20,
-  //         templateField: "columnSettings",
-  //       });
-
-  //       seriesValue.data.setAll([item]);
-  //     });
-
-  //     chart.appear(1000, 100);
-
-  //     return () => {
-  //       root.dispose();
-  //     };
-  //   }, [chartData]);
+    return () => {
+      root.dispose();
+    };
+  }, [taxDetails]);
 
   useEffect(() => {
     setIncome(income1 + income2 + income8);
@@ -188,7 +126,7 @@ const ChartInput: FC = ({}) => {
     } else if (isInput == 8) {
       setIncome8(inputValue);
     } else if (isInput == "d") {
-      setDeduction(inputValue <= DEDUCTION ? DEDUCTION : inputValue);
+      setDeduction(inputValue);
     }
     // const updatedData = data.map((item) => {
     //   return {
@@ -204,9 +142,17 @@ const ChartInput: FC = ({}) => {
   return (
     <div className="w-full text-2xl">
       <form className=" bg-gray-50 p-4 rounded-lg">
-        <div className="flex md:flex-row xl:flex-row flex-col-reverse w-full gap-2 mb-6">
-          <div className="flex-1">กำลังพัฒนา</div>
-          <div className="flex-1 flex flex-col gap-y-2">
+        <div className="flex h-full md:flex-row xl:flex-row flex-col-reverse w-full gap-2 mb-6">
+          {/*  */}
+          <div className="flex flex-1 items-center justify-center ">
+            <div
+              ref={chartRef}
+              className="md:h-1/2 xl:h-1/2 h-96"
+              style={{ width: "100%" }}
+            />
+          </div>
+          {/*  */}
+          <div className="flex-1 flex flex-col gap-y-2 ">
             <p className="text-end mb-2 text-gray-900 ">
               รายได้ทั้งปี{" "}
               <span className="text-3xl text-[#2E86C1] font-bold bg-blue-50 rounded-md">
@@ -220,15 +166,15 @@ const ChartInput: FC = ({}) => {
               <div className="basis-3/4 flex flex-col ">
                 <label className="">เงินเดือนทั้งปี (รวมโบนัส)</label>
                 <input
-                  id="income-range-1"
+                  // id="income-range-1"
                   type="range"
                   value={income1}
                   onChange={(e) => {
                     handleInputChange(e, 1);
                   }}
-                  max={6000000}
+                  max={1000000}
                   min={0}
-                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer "
+                  className="w-full accent-[#2E86C1] h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer "
                 ></input>
               </div>
               {/*  */}
@@ -254,15 +200,15 @@ const ChartInput: FC = ({}) => {
                   ฟรีแลนซ์/<span className="text-lg text-gray-500">ทั้งปี</span>
                 </label>
                 <input
-                  id="income-range-2"
+                  // id="income-range-2"
                   type="range"
                   value={income2}
                   onChange={(e) => {
                     handleInputChange(e, 2);
                   }}
-                  max={6000000}
+                  max={1000000}
                   min={0}
-                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer "
+                  className="w-full accent-[#2E86C1] h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer "
                 ></input>
               </div>
               {/*  */}
@@ -288,15 +234,15 @@ const ChartInput: FC = ({}) => {
                   ขายของ/<span className="text-lg text-gray-500">ทั้งปี</span>
                 </label>
                 <input
-                  id="income-range-8"
+                  // id="income-range-8"
                   type="range"
                   value={income8}
                   onChange={(e) => {
                     handleInputChange(e, 8);
                   }}
-                  max={6000000}
+                  max={1000000}
                   min={0}
-                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer "
+                  className="w-full accent-[#2E86C1] h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer "
                 />
               </div>
               {/*  */}
@@ -464,13 +410,13 @@ const ChartInput: FC = ({}) => {
               <div className="basis-3/4 flex flex-col ">
                 <label className="">ค่าลดหย่อน </label>
                 <input
-                  id="income-range-1"
+                  // id="income-range-1"
                   type="range"
                   value={deduction}
                   onChange={(e) => {
                     handleInputChange(e, "d");
                   }}
-                  max={6000000}
+                  max={1000000}
                   min={0}
                   className="w-full accent-[#27AE60] h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer "
                 ></input>
@@ -573,20 +519,8 @@ const ChartInput: FC = ({}) => {
             )}
           </div>
         </div>
-
         {/*  */}
-
-        <div className="flex justify-end">
-          {/* <button
-            // type="submit"
-            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg w-full sm:w-auto px-5 py-2.5 text-center "
-          >
-            ต่อไป
-          </button> */}
-        </div>
       </form>
-
-      {/* <div id="chartdiv1" className="w-full h-[500px]"></div> */}
     </div>
   );
 };

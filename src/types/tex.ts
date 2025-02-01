@@ -8,7 +8,13 @@ export type TaxDetail = {
   paid: number;
 };
 
+export type ChartData = {
+  value: number;
+  category: string;
+};
+
 export type TaxCalculationResult = {
   details: TaxDetail[];
   sum: number;
+  chartData: ChartData[]
 };
