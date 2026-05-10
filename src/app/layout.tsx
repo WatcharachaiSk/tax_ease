@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 // import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import { thsarabun } from "@/libs/fonts";
 
 // const geistSans = Geist({
@@ -48,12 +49,13 @@ export default function RootLayout({
   return (
     <html lang="th">
       <body
-        // className={` ${thsarabun.className} text-lg`}
-        className={thsarabun.className}
-        // className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${thsarabun.className} min-h-screen flex flex-col`}
       >
         <Header />
-        {children}
+        <div className="flex-grow">
+          {children}
+        </div>
+        <Footer />
       </body>
     </html>
   );
