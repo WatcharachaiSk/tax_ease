@@ -1,0 +1,410 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:transparent}
+.wrap{font-family:-apple-system,'SF Pro Display','Helvetica Neue',sans-serif;color:var(--color-text-primary);padding:1.25rem 0}
+.sec-eye{font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--color-text-tertiary);margin-bottom:.625rem}
+.income-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-bottom:.875rem}
+.inc-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:16px;padding:.875rem .875rem .75rem;transition:border-color .2s}
+.inc-card.active{border-color:var(--color-text-primary)}
+.inc-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem}
+.inc-icon{width:26px;height:26px;border-radius:7px;background:var(--color-background-secondary);display:flex;align-items:center;justify-content:center}
+.tog{width:34px;height:19px;border-radius:99px;background:var(--color-border-secondary);border:none;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0}
+.tog.on{background:var(--color-text-primary)}
+.tog::after{content:'';position:absolute;top:2.5px;left:2.5px;width:14px;height:14px;border-radius:99px;background:#fff;transition:transform .2s}
+.tog.on::after{transform:translateX(15px)}
+.inc-title{font-size:12px;font-weight:500;margin-bottom:1px}
+.inc-sub{font-size:10px;color:var(--color-text-tertiary)}
+.inp-wrap{display:flex;align-items:center;gap:5px;background:var(--color-background-secondary);border-radius:9px;padding:7px 9px;margin-top:.5rem}
+.inp-wrap input{flex:1;border:none;background:transparent;font-size:14px;font-weight:500;color:var(--color-text-primary);font-family:inherit;outline:none;min-width:0}
+.inp-wrap span{font-size:12px;color:var(--color-text-tertiary)}
+.inc-ded{font-size:10px;color:var(--color-text-tertiary);margin-top:4px;text-align:right}
+.inc-ded b{color:var(--color-text-secondary)}
+.ghost-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:9px;border:0.5px dashed var(--color-border-secondary);border-radius:12px;background:transparent;color:var(--color-text-secondary);font-size:12px;cursor:pointer;font-family:inherit;transition:background .15s,color .15s;margin-bottom:1.125rem}
+.ghost-btn:hover{background:var(--color-background-secondary);color:var(--color-text-primary)}
+.ded-section{background:var(--color-background-secondary);border-radius:16px;padding:.875rem 1.125rem;margin-bottom:1.125rem}
+.ded-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:0.5px solid var(--color-border-tertiary)}
+.ded-row:last-child{border-bottom:none}
+.ded-ic{width:22px;height:22px;border-radius:6px;background:var(--color-background-primary);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ded-name{flex:1;font-size:12px;color:var(--color-text-secondary)}
+.ded-val{font-size:12px;font-weight:500;font-variant-numeric:tabular-nums;min-width:70px;text-align:right;transition:all .3s}
+.ded-del{background:transparent;border:none;cursor:pointer;color:var(--color-text-tertiary);padding:0 0 0 4px;line-height:1;font-size:15px}
+.ded-del:hover{color:#e24b4a}
+.sum-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:16px;padding:1.125rem;margin-bottom:1.125rem}
+.sum-r{display:flex;justify-content:space-between;align-items:center;padding:4px 0}
+.sum-lbl{font-size:13px;color:var(--color-text-secondary)}
+.sum-val{font-size:13px;font-weight:500;font-variant-numeric:tabular-nums;transition:all .4s}
+.sum-div{height:.5px;background:var(--color-border-tertiary);margin:6px 0}
+.stk-wrap{margin:.875rem 0 .5rem}
+.stk-track{height:22px;display:flex;border-radius:9px;overflow:hidden;gap:2px;background:var(--color-background-secondary)}
+.seg{height:100%;transition:width .7s cubic-bezier(.34,1.56,.64,1);flex-shrink:0}
+.seg:first-child{border-radius:9px 0 0 9px}
+.seg:last-child{border-radius:0 9px 9px 0}
+.leg-wrap{display:flex;flex-wrap:wrap;gap:5px 12px;margin-top:7px}
+.leg-i{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--color-text-secondary)}
+.leg-d{width:7px;height:7px;border-radius:2px;flex-shrink:0}
+.tax-rows-c{display:flex;flex-direction:column;gap:4px;margin:.625rem 0}
+.tax-r{display:flex;align-items:center;gap:8px}
+.tax-rl{font-size:11px;color:var(--color-text-tertiary);min-width:115px}
+.tax-bg{flex:1;height:4px;background:var(--color-background-secondary);border-radius:99px;overflow:hidden}
+.tax-fill{height:100%;border-radius:99px;transition:width .7s cubic-bezier(.34,1.56,.64,1)}
+.tax-amt{font-size:11px;font-weight:500;min-width:56px;text-align:right;font-variant-numeric:tabular-nums}
+.res-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1rem}
+.res-c{background:var(--color-background-secondary);border-radius:13px;padding:.875rem 1rem}
+.res-lbl{font-size:11px;color:var(--color-text-tertiary);margin-bottom:3px}
+.res-val{font-size:17px;font-weight:500;font-variant-numeric:tabular-nums;transition:all .4s}
+.res-sub{font-size:10px;color:var(--color-text-tertiary);margin-top:2px}
+
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;align-items:center;justify-content:center;padding:1rem}
+.modal-overlay.open{display:flex}
+.modal-box{background:var(--color-background-primary);border-radius:20px;width:100%;max-width:560px;max-height:85vh;overflow-y:auto;padding:1.5rem}
+.modal-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
+.modal-ttl{font-size:17px;font-weight:500}
+.modal-close-x{background:var(--color-background-secondary);border:none;cursor:pointer;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--color-text-secondary);font-size:16px}
+.modal-close-x:hover{background:var(--color-border-tertiary)}
+.opt-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.opt-card{border:0.5px solid var(--color-border-tertiary);border-radius:14px;padding:1rem;cursor:pointer;transition:border-color .15s,background .15s;background:transparent;font-family:inherit;text-align:left;width:100%}
+.opt-card:hover{background:var(--color-background-secondary);border-color:var(--color-border-secondary)}
+.opt-ic{font-size:20px;color:var(--color-text-secondary);margin-bottom:6px;display:block}
+.opt-title{font-size:13px;font-weight:500;color:var(--color-text-primary);display:block;margin-bottom:3px}
+.opt-tag{display:inline-flex;align-items:center;gap:3px;font-size:10px;padding:2px 7px;border-radius:99px;margin-bottom:5px}
+.opt-tag.green{background:#e1f5ee;color:#085041}
+.opt-tag.amber{background:#faeeda;color:#633806}
+.opt-tag.gray{background:#f1efe8;color:#5f5e5a}
+.opt-desc{font-size:11px;color:var(--color-text-tertiary);line-height:1.4;margin-bottom:6px;display:block}
+.opt-ref{display:inline-flex;align-items:center;gap:3px;font-size:10px;color:var(--color-text-secondary);text-decoration:none;border:0.5px solid var(--color-border-tertiary);border-radius:6px;padding:2px 6px;margin-top:2px}
+.opt-ref:hover{background:var(--color-background-secondary)}
+.modal-footer{margin-top:1.125rem;padding-top:1rem;border-top:0.5px solid var(--color-border-tertiary)}
+.modal-cancel{width:100%;padding:10px;border:0.5px solid var(--color-border-secondary);border-radius:11px;background:transparent;font-size:13px;cursor:pointer;font-family:inherit;color:var(--color-text-secondary);transition:background .15s}
+.modal-cancel:hover{background:var(--color-background-secondary)}
+.ded-custom-inp{display:flex;align-items:center;gap:6px;background:var(--color-background-secondary);border-radius:9px;padding:6px 9px;margin-top:6px}
+.ded-custom-inp input{flex:1;border:none;background:transparent;font-size:13px;font-weight:500;color:var(--color-text-primary);font-family:inherit;outline:none;min-width:0}
+
+@keyframes slideIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeNum{from{opacity:.5}to{opacity:1}}
+.anim-in{animation:slideIn .25s cubic-bezier(.34,1.56,.64,1) both}
+.num-flash{animation:fadeNum .3s ease both}
+</style>
+
+<h2 class="sr-only">คำนวณภาษีรายได้หลายแหล่งพร้อมค่าลดหย่อน พร้อมลิงก์อ้างอิงกรมสรรพากร</h2>
+
+<div class="wrap">
+  <p class="sec-eye">รายได้ของคุณ</p>
+  <div class="income-grid" id="incGrid"></div>
+  <button class="ghost-btn" onclick="openIncModal()"><i class="ti ti-plus" aria-hidden="true" style="font-size:14px"></i>เพิ่มรายได้ประเภทอื่น</button>
+
+  <p class="sec-eye">ค่าลดหย่อน</p>
+  <div class="ded-section">
+    <div id="dedList"></div>
+    <button class="ghost-btn" style="margin:8px 0 0" onclick="openDedModal()"><i class="ti ti-plus" aria-hidden="true" style="font-size:14px"></i>เพิ่มค่าลดหย่อน</button>
+  </div>
+
+  <div class="sum-card">
+    <div class="sum-r"><span class="sum-lbl">รายได้รวมทั้งปี</span><span class="sum-val" id="sGross">0 บาท</span></div>
+    <div class="sum-r"><span class="sum-lbl" style="color:#d85a30">− ค่าใช้จ่ายหักเหมา</span><span class="sum-val" style="color:#d85a30" id="sExp">0 บาท</span></div>
+    <div class="sum-r"><span class="sum-lbl" style="color:#ba7517">− ค่าลดหย่อนรวม</span><span class="sum-val" style="color:#ba7517" id="sDed">0 บาท</span></div>
+    <div class="sum-div"></div>
+    <div class="sum-r"><span class="sum-lbl" style="font-weight:500;font-size:14px">รายได้สุทธิ</span><span class="sum-val" style="color:#1d9e75;font-size:17px" id="sNet">0 บาท</span></div>
+  </div>
+
+  <div class="stk-wrap">
+    <p style="font-size:11px;color:var(--color-text-tertiary);letter-spacing:.08em;text-transform:uppercase;margin-bottom:7px">รายได้สุทธิในขั้นภาษี</p>
+    <div class="stk-track" id="stkTrack"></div>
+    <div class="leg-wrap" id="stkLeg"></div>
+  </div>
+
+  <div class="tax-rows-c" id="taxRowsC"></div>
+
+  <div class="res-grid">
+    <div class="res-c">
+      <p class="res-lbl">ภาษีที่ต้องชำระ</p>
+      <p class="res-val" style="color:#e24b4a" id="rTax">0 บาท</p>
+      <p class="res-sub" id="rEff">อัตราจริง 0%</p>
+    </div>
+    <div class="res-c">
+      <p class="res-lbl">เงินที่ได้รับจริง</p>
+      <p class="res-val" style="color:#1d9e75" id="rTake">0 บาท</p>
+      <p class="res-sub" id="rPct">100% ของรายได้</p>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="incModal">
+  <div class="modal-box">
+    <div class="modal-hd">
+      <span class="modal-ttl">เพิ่มรายได้ประเภทอื่น</span>
+      <button class="modal-close-x" onclick="closeIncModal()" aria-label="ปิด"><i class="ti ti-x" style="font-size:14px"></i></button>
+    </div>
+    <div class="opt-grid" id="incOptGrid"></div>
+    <div class="modal-footer"><button class="modal-cancel" onclick="closeIncModal()">ยกเลิก</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="dedModal">
+  <div class="modal-box">
+    <div class="modal-hd">
+      <span class="modal-ttl">เพิ่มค่าลดหย่อน</span>
+      <button class="modal-close-x" onclick="closeDedModal()" aria-label="ปิด"><i class="ti ti-x" style="font-size:14px"></i></button>
+    </div>
+    <div class="opt-grid" id="dedOptGrid"></div>
+    <div class="modal-footer"><button class="modal-cancel" onclick="closeDedModal()">ยกเลิก</button></div>
+  </div>
+</div>
+
+<script>
+const BRACKETS=[
+  {max:150000,rate:0,label:'ยกเว้น',color:'#b4b2a9'},
+  {max:300000,rate:.05,label:'5%',color:'#9fe1cb'},
+  {max:500000,rate:.10,label:'10%',color:'#1d9e75'},
+  {max:750000,rate:.15,label:'15%',color:'#0f6e56'},
+  {max:1000000,rate:.20,label:'20%',color:'#f5c4b3'},
+  {max:2000000,rate:.25,label:'25%',color:'#d85a30'},
+  {max:5000000,rate:.30,label:'30%',color:'#993c1d'},
+  {max:Infinity,rate:.35,label:'35%',color:'#4a1b0c'},
+];
+const BRACKET_RANGES=['0–150k','150–300k','300–500k','500–750k','750k–1M','1–2M','2–5M','5M+'];
+
+const ALL_INCOME=[
+  {id:'salary',icon:'ti-briefcase',title:'เงินเดือน',sub:'เงินได้ประเภทที่ 1',deductPct:.5,deductMax:100000,desc:'รายได้จากการจ้างงาน เงินเดือน โบนัส ค่าล่วงเวลา',tag:'หักเหมา 50%',tagColor:'green',maxLabel:'สูงสุด 100,000 บาท',ref:'https://www.rd.go.th/publish/6045.0.html',refLabel:'กรมสรรพากร',core:true},
+  {id:'freelance',icon:'ti-device-laptop',title:'ฟรีแลนซ์',sub:'เงินได้ประเภทที่ 2',deductPct:.5,deductMax:100000,desc:'ค่าจ้าง ค่าคอมมิชชัน ค่าบริการวิชาชีพ',tag:'หักเหมา 50%',tagColor:'green',maxLabel:'สูงสุด 100,000 บาท',ref:'https://www.rd.go.th/publish/6045.0.html',refLabel:'กรมสรรพากร',core:true},
+  {id:'selling',icon:'ti-shopping-cart',title:'ขายของ',sub:'เงินได้ประเภทที่ 8',deductPct:.6,deductMax:Infinity,desc:'รายได้จากการขายสินค้า พาณิชย์ อุตสาหกรรม',tag:'หักเหมา 60%',tagColor:'amber',maxLabel:'ไม่จำกัดวงเงิน',ref:'https://www.rd.go.th/publish/6045.0.html',refLabel:'กรมสรรพากร',core:true},
+  {id:'rental',icon:'ti-home',title:'ค่าเช่า',sub:'เงินได้ประเภทที่ 5',deductPct:.3,deductMax:Infinity,desc:'รายได้จากการให้เช่าทรัพย์สิน บ้าน ที่ดิน รถยนต์',tag:'หักเหมา 30%',tagColor:'amber',maxLabel:'ไม่จำกัดวงเงิน',ref:'https://www.rd.go.th/publish/6045.0.html',refLabel:'กรมสรรพากร',core:false},
+  {id:'dividend',icon:'ti-chart-pie',title:'เงินปันผล',sub:'เงินได้ประเภทที่ 4',deductPct:0,deductMax:0,desc:'เงินปันผลจากหุ้น กองทุน หรือส่วนแบ่งกำไร ถูกหัก ณ ที่จ่าย 10%',tag:'ไม่หักเพิ่ม',tagColor:'gray',maxLabel:'ถูกหัก ณ ที่จ่าย 10%',ref:'https://www.rd.go.th/publish/6045.0.html',refLabel:'กรมสรรพากร',core:false},
+  {id:'commission',icon:'ti-percentage',title:'ค่านายหน้า',sub:'เงินได้ประเภทที่ 2',deductPct:.5,deductMax:100000,desc:'ค่านายหน้า ค่าแนะนำ ค่าบริการทางธุรกิจ',tag:'หักเหมา 50%',tagColor:'green',maxLabel:'สูงสุด 100,000 บาท',ref:'https://www.rd.go.th/publish/6045.0.html',refLabel:'กรมสรรพากร',core:false},
+];
+
+const ALL_DEDUCTIONS=[
+  {id:'personal',icon:'ti-user',name:'ลดหย่อนส่วนตัว',desc:'ทุกคนได้รับสิทธิ์โดยอัตโนมัติ ไม่ต้องยื่นหลักฐานเพิ่มเติม',fixed:60000,maxLabel:'60,000 บาท (คงที่)',tag:'ทุกคนได้รับ',tagColor:'green',ref:'https://www.rd.go.th/publish/47749.0.html',refLabel:'กรมสรรพากร',removable:false,hasInput:false},
+  {id:'social',icon:'ti-building-bank',name:'ประกันสังคม',desc:'เงินสมทบกองทุนประกันสังคม หักจากเงินเดือนอัตราโนมัติ 5% สูงสุด 750 บาท/เดือน',fixed:9000,maxLabel:'สูงสุด 9,000 บาท/ปี',tag:'หัก ณ ที่จ่าย',tagColor:'gray',ref:'https://www.sso.go.th',refLabel:'ประกันสังคม',removable:true,hasInput:false},
+  {id:'insurance',icon:'ti-heart',name:'เบี้ยประกันชีวิต',desc:'เบี้ยประกันชีวิตทั่วไป อายุกรมธรรม์ไม่น้อยกว่า 10 ปี ลดหย่อนได้ตามจริง',pctOfIncome:null,maxAmt:100000,maxLabel:'สูงสุด 100,000 บาท/ปี',tag:'ตามจริง',tagColor:'amber',ref:'https://www.rd.go.th/publish/47749.0.html',refLabel:'กรมสรรพากร',removable:true,hasInput:true},
+  {id:'health',icon:'ti-stethoscope',name:'เบี้ยประกันสุขภาพ',desc:'ประกันสุขภาพตนเอง และประกันสุขภาพบิดามารดา (บิดา/มารดา คนละ 15,000)',pctOfIncome:null,maxAmt:25000,maxLabel:'สูงสุด 25,000 บาท/ปี',tag:'ตามจริง',tagColor:'amber',ref:'https://www.rd.go.th/publish/47749.0.html',refLabel:'กรมสรรพากร',removable:true,hasInput:true},
+  {id:'ssf',icon:'ti-shield-check',name:'กองทุน SSF',desc:'กองทุนรวมเพื่อการออม ไม่มีกำหนดซื้อขั้นต่ำ ถือขั้นต่ำ 10 ปี นับจากวันซื้อ',pctOfIncome:30,maxAmt:200000,maxLabel:'30% ของรายได้ สูงสุด 200,000 บาท',tag:'30% ของรายได้',tagColor:'green',ref:'https://www.sec.or.th',refLabel:'ก.ล.ต.',removable:true,hasInput:true},
+  {id:'rmf',icon:'ti-piggy-bank',name:'กองทุน RMF',desc:'กองทุนรวมเพื่อการเลี้ยงชีพ ต้องซื้อต่อเนื่องทุกปี ถอนได้เมื่ออายุ 55 ปีขึ้นไป',pctOfIncome:30,maxAmt:500000,maxLabel:'30% ของรายได้ สูงสุด 500,000 บาท',tag:'30% ของรายได้',tagColor:'green',ref:'https://www.sec.or.th',refLabel:'ก.ล.ต.',removable:true,hasInput:true},
+  {id:'ltf',icon:'ti-chart-bar',name:'กองทุน LTF',desc:'กองทุนรวมหุ้นระยะยาว (ยกเลิกสิทธิ์ปี 2563 แล้ว) สำหรับผู้ถือกองทุนก่อนหน้า',pctOfIncome:15,maxAmt:500000,maxLabel:'15% ของรายได้ สูงสุด 500,000 บาท',tag:'15% ของรายได้',tagColor:'gray',ref:'https://www.sec.or.th',refLabel:'ก.ล.ต.',removable:true,hasInput:true},
+  {id:'pension',icon:'ti-building-community',name:'เบี้ยประกันบำนาญ',desc:'ประกันชีวิตแบบบำนาญ อายุกรมธรรม์ไม่น้อยกว่า 10 ปี รับบำนาญเมื่ออายุ 55–85 ปี',pctOfIncome:15,maxAmt:200000,maxLabel:'15% ของรายได้ สูงสุด 200,000 บาท',tag:'15% ของรายได้',tagColor:'green',ref:'https://www.rd.go.th/publish/47749.0.html',refLabel:'กรมสรรพากร',removable:true,hasInput:true},
+  {id:'govpension',icon:'ti-award',name:'กบข./กองทุนสำรองเลี้ยงชีพ',desc:'กองทุนบำเหน็จบำนาญข้าราชการ หรือกองทุนสำรองเลี้ยงชีพของนายจ้าง',pctOfIncome:30,maxAmt:500000,maxLabel:'30% ของรายได้ สูงสุด 500,000 บาท',tag:'30% ของรายได้',tagColor:'green',ref:'https://www.rd.go.th/publish/47749.0.html',refLabel:'กรมสรรพากร',removable:true,hasInput:true},
+  {id:'donation',icon:'ti-heart-handshake',name:'เงินบริจาคทั่วไป',desc:'บริจาคแก่วัด มูลนิธิ โรงพยาบาลรัฐ ลดหย่อนได้ตามจริง แต่ไม่เกิน 10% ของรายได้หลังหักลดหย่อนอื่น',pctOfIncome:10,maxAmt:Infinity,maxLabel:'สูงสุด 10% ของรายได้สุทธิ',tag:'สูงสุด 10%',tagColor:'amber',ref:'https://www.rd.go.th/publish/47749.0.html',refLabel:'กรมสรรพากร',removable:true,hasInput:true},
+  {id:'donateEdu',icon:'ti-school',name:'บริจาคเพื่อการศึกษา',desc:'บริจาคให้สถานศึกษา สาธารณประโยชน์ หรือกีฬา ลดหย่อนได้ 2 เท่าของจำนวนที่จ่ายจริง',pctOfIncome:10,maxAmt:Infinity,maxLabel:'2 เท่าของจำนวนจริง สูงสุด 10%',tag:'2 เท่า',tagColor:'amber',ref:'https://www.rd.go.th/publish/47749.0.html',refLabel:'กรมสรรพากร',removable:true,hasInput:true},
+  {id:'spouse',icon:'ti-users',name:'ลดหย่อนคู่สมรส',desc:'คู่สมรสที่ไม่มีรายได้หรือรายได้น้อย สามารถหักลดหย่อนได้',fixed:60000,maxLabel:'60,000 บาท (คงที่)',tag:'คู่สมรสไม่มีรายได้',tagColor:'gray',ref:'https://www.rd.go.th/publish/47749.0.html',refLabel:'กรมสรรพากร',removable:true,hasInput:false},
+  {id:'child',icon:'ti-baby-carriage',name:'ลดหย่อนบุตร',desc:'บุตรที่ชอบด้วยกฎหมาย คนที่ 1-2 ลดหย่อน 30,000 บาท/คน บุตรคนที่ 3 เป็นต้นไป 60,000 บาท/คน',fixed:30000,maxLabel:'30,000 บาท/คน (หรือ 60,000 บาทตั้งแต่คนที่ 3)',tag:'ต่อบุตร 1 คน',tagColor:'gray',ref:'https://www.rd.go.th/publish/47749.0.html',refLabel:'กรมสรรพากร',removable:true,hasInput:false},
+];
+
+let incomeCards=ALL_INCOME.filter(t=>t.core).map(t=>({...t,on:t.id==='salary',amount:0}));
+let activeDeds=[{...ALL_DEDUCTIONS[0],amount:60000}];
+
+function fmt(n){return Math.round(n).toLocaleString('th-TH')}
+function calcExp(t,amt){
+  if(t.deductMax===Infinity) return amt*t.deductPct;
+  return Math.min(amt*t.deductPct,t.deductMax);
+}
+function calcTax(net){
+  let tax=0,prev=0;
+  for(let b of BRACKETS){
+    if(net<=prev) break;
+    const top=b.max===Infinity?net:Math.min(net,b.max);
+    tax+=(top-prev)*b.rate;
+    prev=b.max===Infinity?net:b.max;
+  }
+  return tax;
+}
+function flashEl(id){
+  const el=document.getElementById(id);
+  if(!el) return;
+  el.classList.remove('num-flash');
+  void el.offsetWidth;
+  el.classList.add('num-flash');
+}
+function tagHTML(d){
+  return `<span class="opt-tag ${d.tagColor||'gray'}">${d.tag||''}</span>`;
+}
+
+function renderIncome(){
+  const g=document.getElementById('incGrid');
+  g.innerHTML='';
+  incomeCards.forEach((t,i)=>{
+    const ded=calcExp(t,t.amount||0);
+    const pctTxt=t.deductMax===Infinity?`หัก ${Math.round(t.deductPct*100)}%`:`หัก ${Math.round(t.deductPct*100)}% สูงสุด ${fmt(t.deductMax)}`;
+    const card=document.createElement('div');
+    card.className='inc-card anim-in'+(t.on?' active':'');
+    card.innerHTML=`
+      <div class="inc-head">
+        <div class="inc-icon"><i class="ti ${t.icon}" aria-hidden="true" style="font-size:13px;color:var(--color-text-secondary)"></i></div>
+        <button class="tog${t.on?' on':''}" onclick="toggleInc(${i})" aria-label="เปิด/ปิด ${t.title}"></button>
+      </div>
+      <p class="inc-title">${t.title}</p>
+      <p class="inc-sub">${t.sub}</p>
+      ${t.on?`
+      <div class="inp-wrap">
+        <input type="number" min="0" step="1000" placeholder="0" value="${t.amount||''}" oninput="setInc(${i},this.value)" aria-label="รายได้ ${t.title}">
+        <span>บาท/ปี</span>
+      </div>
+      <p class="inc-ded">${pctTxt}: <b>${fmt(ded)}</b></p>
+      `:''}
+    `;
+    g.appendChild(card);
+  });
+}
+function toggleInc(i){
+  incomeCards[i].on=!incomeCards[i].on;
+  if(!incomeCards[i].on) incomeCards[i].amount=0;
+  renderIncome(); recalc();
+}
+function setInc(i,v){
+  incomeCards[i].amount=parseFloat(v)||0;
+  const cards=document.getElementById('incGrid').children;
+  if(cards[i]){
+    const b=cards[i].querySelector('.inc-ded b');
+    if(b){const d=calcExp(incomeCards[i],incomeCards[i].amount);b.textContent=fmt(d);}
+  }
+  recalc();
+}
+
+function renderDeds(){
+  const c=document.getElementById('dedList');
+  c.innerHTML='';
+  activeDeds.forEach((d,i)=>{
+    const row=document.createElement('div');
+    row.className='ded-row';
+    row.innerHTML=`
+      <div class="ded-ic"><i class="ti ${d.icon}" aria-hidden="true" style="font-size:12px;color:var(--color-text-secondary)"></i></div>
+      <span class="ded-name">${d.name}</span>
+      ${d.hasInput?`<div class="ded-custom-inp" style="width:120px;padding:4px 7px"><input type="number" min="0" step="1000" placeholder="0" value="${d.userAmt||''}" oninput="setDedAmt(${i},this.value)" style="font-size:12px" aria-label="${d.name}"><span style="font-size:11px;color:var(--color-text-tertiary)">บาท</span></div>`:''}
+      <span class="ded-val" id="dv${i}">${fmt(d.amount||0)} บาท</span>
+      ${d.removable?`<button class="ded-del" onclick="removeDed(${i})" aria-label="ลบ"><i class="ti ti-x" style="font-size:13px"></i></button>`:''}
+    `;
+    c.appendChild(row);
+  });
+}
+function setDedAmt(i,v){
+  activeDeds[i].userAmt=parseFloat(v)||0;
+  recalc();
+}
+function removeDed(i){activeDeds.splice(i,1);renderDeds();recalc();}
+
+function recalc(){
+  const on=incomeCards.filter(t=>t.on);
+  const gross=on.reduce((s,t)=>s+(t.amount||0),0);
+  const exp=on.reduce((s,t)=>s+calcExp(t,t.amount||0),0);
+  const afterExp=Math.max(0,gross-exp);
+
+  activeDeds.forEach(d=>{
+    if(d.fixed){d.amount=d.fixed;return;}
+    if(d.hasInput){
+      const ua=d.userAmt||0;
+      if(d.pctOfIncome){
+        const cap=afterExp*(d.pctOfIncome/100);
+        d.amount=d.maxAmt===Infinity?Math.min(ua,cap):Math.min(ua,cap,d.maxAmt);
+      } else {
+        d.amount=d.maxAmt===Infinity?ua:Math.min(ua,d.maxAmt||0);
+      }
+    }
+  });
+  renderDeds();
+
+  const totalDed=activeDeds.reduce((s,d)=>s+(d.amount||0),0);
+  const net=Math.max(0,afterExp-totalDed);
+  const tax=calcTax(net);
+  const take=gross-tax;
+
+  ['sGross','sExp','sDed','sNet','rTax','rTake'].forEach(flashEl);
+  document.getElementById('sGross').textContent=fmt(gross)+' บาท';
+  document.getElementById('sExp').textContent='−'+fmt(exp)+' บาท';
+  document.getElementById('sDed').textContent='−'+fmt(totalDed)+' บาท';
+  document.getElementById('sNet').textContent=fmt(net)+' บาท';
+  document.getElementById('rTax').textContent=fmt(tax)+' บาท';
+  document.getElementById('rTake').textContent=fmt(take)+' บาท';
+  document.getElementById('rEff').textContent='อัตราจริง '+(gross>0?((tax/gross)*100).toFixed(1):'0.0')+'%';
+  document.getElementById('rPct').textContent=(gross>0?Math.round((take/gross)*100):100)+'% ของรายได้';
+  buildStacked(net);buildTaxRows(net);
+}
+
+function buildStacked(net){
+  const track=document.getElementById('stkTrack');
+  const leg=document.getElementById('stkLeg');
+  let prev=0,segs=[];
+  for(let b of BRACKETS){
+    if(net<=prev) break;
+    const top=b.max===Infinity?net:Math.min(net,b.max);
+    const amt=top-prev;
+    segs.push({amt,label:b.label,color:b.color});
+    prev=b.max===Infinity?net:b.max;
+  }
+  const total=net>0?net:1;
+  track.innerHTML=segs.map(s=>`<div class="seg" style="width:${Math.max(1,(s.amt/total)*100)}%;background:${s.color};min-width:3px"></div>`).join('');
+  leg.innerHTML=segs.map(s=>`<div class="leg-i"><div class="leg-d" style="background:${s.color}"></div>${s.label} (${fmt(s.amt)})</div>`).join('');
+}
+function buildTaxRows(net){
+  const c=document.getElementById('taxRowsC');
+  let prev=0,rows=[],maxT=0;
+  for(let i=0;i<BRACKETS.length;i++){
+    const b=BRACKETS[i];
+    if(net<=prev) break;
+    const top=b.max===Infinity?net:Math.min(net,b.max);
+    const t=(top-prev)*b.rate;
+    maxT=Math.max(maxT,t);
+    rows.push({label:BRACKET_RANGES[i]+' ('+b.label+')',tax:t,color:b.color});
+    prev=b.max===Infinity?net:b.max;
+  }
+  if(maxT===0) maxT=1;
+  c.innerHTML=rows.map(r=>`<div class="tax-r"><span class="tax-rl">${r.label}</span><div class="tax-bg"><div class="tax-fill" style="width:${(r.tax/maxT)*100}%;background:${r.color}"></div></div><span class="tax-amt">${fmt(r.tax)}</span></div>`).join('');
+}
+
+function openIncModal(){
+  const existIds=incomeCards.map(t=>t.id);
+  const opts=ALL_INCOME.filter(o=>!existIds.includes(o.id));
+  const g=document.getElementById('incOptGrid');
+  if(!opts.length){
+    g.innerHTML='<p style="font-size:13px;color:var(--color-text-tertiary);grid-column:1/-1;padding:.5rem 0">เพิ่มครบทุกประเภทแล้ว</p>';
+  } else {
+    g.innerHTML=opts.map(o=>`
+      <button class="opt-card" onclick="addIncome('${o.id}')">
+        <i class="ti ${o.icon} opt-ic" aria-hidden="true"></i>
+        <span class="opt-title">${o.title}</span>
+        ${tagHTML(o)}
+        <span class="opt-desc">${o.desc}</span>
+        <span style="font-size:11px;color:var(--color-text-secondary);display:block;margin-top:2px">ลดหย่อนได้: ${o.maxLabel}</span>
+        <a class="opt-ref" href="${o.ref}" target="_blank" rel="noopener"><i class="ti ti-external-link" style="font-size:11px"></i>${o.refLabel}</a>
+      </button>
+    `).join('');
+  }
+  document.getElementById('incModal').classList.add('open');
+}
+function closeIncModal(){document.getElementById('incModal').classList.remove('open')}
+function addIncome(id){
+  const def=ALL_INCOME.find(o=>o.id===id);
+  incomeCards.push({...def,on:true,amount:0});
+  closeIncModal(); renderIncome(); recalc();
+}
+
+function openDedModal(){
+  const existIds=activeDeds.map(d=>d.id);
+  const opts=ALL_DEDUCTIONS.filter(d=>!existIds.includes(d.id));
+  const g=document.getElementById('dedOptGrid');
+  if(!opts.length){
+    g.innerHTML='<p style="font-size:13px;color:var(--color-text-tertiary);grid-column:1/-1;padding:.5rem 0">เพิ่มค่าลดหย่อนครบแล้ว</p>';
+  } else {
+    g.innerHTML=opts.map(o=>`
+      <button class="opt-card" onclick="addDed('${o.id}')">
+        <i class="ti ${o.icon} opt-ic" aria-hidden="true"></i>
+        <span class="opt-title">${o.name}</span>
+        ${tagHTML(o)}
+        <span class="opt-desc">${o.desc}</span>
+        <span style="font-size:11px;color:var(--color-text-secondary);display:block;margin-top:2px">ลดหย่อนสูงสุด: ${o.maxLabel}</span>
+        <a class="opt-ref" href="${o.ref}" target="_blank" rel="noopener"><i class="ti ti-external-link" style="font-size:11px"></i>${o.refLabel}</a>
+      </button>
+    `).join('');
+  }
+  document.getElementById('dedModal').classList.add('open');
+}
+function closeDedModal(){document.getElementById('dedModal').classList.remove('open')}
+function addDed(id){
+  const def=ALL_DEDUCTIONS.find(d=>d.id===id);
+  activeDeds.push({...def,amount:0,userAmt:0});
+  closeDedModal(); renderDeds(); recalc();
+}
+
+document.getElementById('incModal').addEventListener('click',function(e){if(e.target===this) closeIncModal();});
+document.getElementById('dedModal').addEventListener('click',function(e){if(e.target===this) closeDedModal();});
+
+renderIncome(); renderDeds(); recalc();
+</script>

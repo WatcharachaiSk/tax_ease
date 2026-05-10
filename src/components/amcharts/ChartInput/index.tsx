@@ -118,7 +118,8 @@ const ChartInput: FC = ({}) => {
     e: React.ChangeEvent<HTMLInputElement>,
     isInput: 1 | 2 | 8 | "d"
   ) => {
-    const inputValue = parseInt(e.target.value) || 0;
+    const rawValue = parseInt(e.target.value.replace(/,/g, "")) || 0;
+    const inputValue = rawValue < 0 ? 0 : rawValue;
     if (isInput == 1) {
       setIncome1(inputValue);
     } else if (isInput == 2) {
@@ -128,15 +129,6 @@ const ChartInput: FC = ({}) => {
     } else if (isInput == "d") {
       setDeduction(inputValue);
     }
-    // const updatedData = data.map((item) => {
-    //   return {
-    //     ...item,
-    //     value: item.category.includes("ขึ้นไป")
-    //       ? item.value
-    //       : inputIncome / 10000,
-    //   };
-    // });
-    // setChartData(updatedData);
   };
 
   return (
@@ -181,8 +173,9 @@ const ChartInput: FC = ({}) => {
               <div className="basis-1/4">
                 <input
                   id="income-number-1"
-                  type="number"
-                  value={income1}
+                  type="text"
+                  inputMode="numeric"
+                  value={income1 ? formattedNumber(income1) : ""}
                   onChange={(e) => {
                     handleInputChange(e, 1);
                   }}
@@ -215,8 +208,9 @@ const ChartInput: FC = ({}) => {
               <div className="basis-1/4">
                 <input
                   id="income-number-2"
-                  type="number"
-                  value={income2}
+                  type="text"
+                  inputMode="numeric"
+                  value={income2 ? formattedNumber(income2) : ""}
                   onChange={(e) => {
                     handleInputChange(e, 2);
                   }}
@@ -249,8 +243,9 @@ const ChartInput: FC = ({}) => {
               <div className="basis-1/4">
                 <input
                   id="income-number-8"
-                  type="number"
-                  value={income8}
+                  type="text"
+                  inputMode="numeric"
+                  value={income8 ? formattedNumber(income8) : ""}
                   onChange={(e) => {
                     handleInputChange(e, 8);
                   }}
@@ -365,7 +360,7 @@ const ChartInput: FC = ({}) => {
                   ของเงินการขายสินค้า
                 </p>
                 <p className=" text-xl text-gray-500">
-                  ( หรือตามจริง{" "}
+                  ( หรือตามจริง{" "}
                   <span className="text-[#E74C3C] bg-red-50 rounded-md">
                     ต้องมีหลักฐาน
                   </span>{" "}
@@ -425,8 +420,9 @@ const ChartInput: FC = ({}) => {
               <div className="basis-1/4">
                 <input
                   id="income-number-1"
-                  type="number"
-                  value={deduction}
+                  type="text"
+                  inputMode="numeric"
+                  value={deduction ? formattedNumber(deduction) : ""}
                   onChange={(e) => {
                     handleInputChange(e, "d");
                   }}
@@ -493,19 +489,6 @@ const ChartInput: FC = ({}) => {
                             ? "ยกเว้นภาษี"
                             : formattedNumber(item.paid)}
                         </p>
-                        {/* {taxDetails.details.length - 1 == idx && (
-                          <p className="text-sm font-mono font-bold">
-                            รวมภาษี ={" "}
-                            {taxDetails.details.map((itemP, idxP) => {
-                              return (
-                                <span key={idxP}>
-                                  {itemP.paid != 0 && itemP.paid} +
-                                </span>
-                              );
-                            })}{" "}
-                            =<span className="text-[#C0392B]"> 9,500 </span>
-                          </p>
-                        )} */}
                       </div>
                     );
                   })}

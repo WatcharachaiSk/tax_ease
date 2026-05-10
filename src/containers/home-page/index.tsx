@@ -1,6 +1,6 @@
 import LineWithCustomBullets from "@/components/amcharts/LineWithCustomBullets";
-import ChartInput from "@/components/amcharts/ChartInput";
-// import TaxCard from "@/components/Cards/TaxCardEx";
+// import ChartInput from "@/components/amcharts/ChartInput";
+import TaxCard from "@/components/Cards/TaxCardEx";
 // import TestMotion from "@/components/Motions/testMotion";
 import TableTax from "@/components/Table/tax";
 import React, { FC } from "react";
@@ -114,7 +114,6 @@ const HomePage: FC = async ({}) => {
           </div>
         </div>
       </div>
-      {/* <TaxCard /> */}
       <a
         type="button"
         className="text-3xl py-1 px-6 me-2 mb-2 font-medium text-gray-900 focus:outline-none bg-white rounded-xl border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 "
@@ -125,7 +124,8 @@ const HomePage: FC = async ({}) => {
         มาแปลงรายได้ให้ “เห็นภาพ” 🚀 แค่กรอกข้อมูล
         แล้วปล่อยให้ระบบจัดการส่วนที่เหลือ! 💼
       </p>
-      <ChartInput />
+      {/* <ChartInput /> */}
+      <TaxCard />
     </div>
   );
 };

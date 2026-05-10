@@ -15,8 +15,26 @@ import { thsarabun } from "@/libs/fonts";
 // });
 
 export const metadata: Metadata = {
-  title: "TAX ",
-  description: "คำนวณภาษีง่ายๆ",
+  title: "TaxEase - คำนวณภาษีเงินได้บุคคลธรรมดา ง่ายและแม่นยำ",
+  description: "เครื่องมือคำนวณภาษีเงินได้บุคคลธรรมดา ช่วยวางแผนภาษี คำนวณค่าลดหย่อน และสรุปยอดภาษีที่ต้องจ่ายอย่างมืออาชีพ",
+  keywords: ["คำนวณภาษี", "ภาษีเงินได้", "วางแผนภาษี", "ลดหย่อนภาษี", "Tax Calculator Thailand"],
+  authors: [{ name: "TaxEase Team" }],
+  openGraph: {
+    title: "TaxEase - คำนวณภาษีเงินได้บุคคลธรรมดา",
+    description: "คำนวณภาษีง่ายๆ พร้อมตัวช่วยวางแผนค่าลดหย่อน",
+    url: "https://tax-ease.vercel.app", // ควรเปลี่ยนเป็น domain จริงถ้ามี
+    siteName: "TaxEase",
+    images: [
+      {
+        url: "/TaxEase.webp",
+        width: 1200,
+        height: 630,
+        alt: "TaxEase Logo",
+      },
+    ],
+    locale: "th_TH",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
@@ -25,7 +43,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="th">
       <body
         // className={` ${thsarabun.className} text-lg`}
         className={thsarabun.className}

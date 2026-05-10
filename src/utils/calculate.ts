@@ -55,12 +55,15 @@ export const calculateTaxDetails = (income: number): TaxCalculationResult => {
   let previousMax = 0;
   let sum = 0;
 
+  // Ensure income is not negative
+  const effectiveIncome = income < 0 ? 0 : income;
+
   for (let i = 0; i < brackets.length; i++) {
     const currentBracket = brackets[i];
     const max =
       i < brackets.length - 1 ? parseRange(currentBracket.range)[1] : Infinity;
 
-    if (income > max) {
+    if (effectiveIncome > max) {
       const paid = (max - previousMax) * currentBracket.rate;
       const rangeWithRate = `${currentBracket.range} -> ${(
         currentBracket.rate * 100
@@ -73,8 +76,8 @@ export const calculateTaxDetails = (income: number): TaxCalculationResult => {
       sum += paid;
       previousMax = max;
     } else {
-      const paid = (income - previousMax) * currentBracket.rate;
-      const rangeWithRate = `${previousMax + 1} - ${income} -> ${(
+      const paid = (effectiveIncome - previousMax) * currentBracket.rate;
+      const rangeWithRate = `${previousMax + 1} - ${effectiveIncome} -> ${(
         currentBracket.rate * 100
       ).toFixed(0)}% = `;
       taxDetails.push({ range: rangeWithRate, paid });
