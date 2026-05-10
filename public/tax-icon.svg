@@ -1,0 +1,42 @@
+// components/TaxIconWithText.tsx
+import React from 'react';
+
+const TaxIconWithText = ({ size = 120 }) => {
+  return (
+    <svg 
+      width={size} 
+      height={size} 
+      viewBox="0 0 200 200" 
+      fill="none" 
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      {/* พื้นหลัง App Icon ขอบมน */}
+      <rect width="200" height="200" rx="45" fill="#F8FAFC"/>
+      <rect x="10" y="10" width="180" height="180" rx="35" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="4"/>
+      
+      {/* ตัวอักษร "TAX" */}
+      <text 
+        x="100" 
+        y="115" 
+        fontFamily="Arial, sans-serif" 
+        fontWeight="800" 
+        fontSize="65" 
+        fill="#1E3A8A" 
+        textAnchor="middle"
+        letterSpacing="2"
+      >
+        TAX
+      </text>
+
+      {/* กราฟขั้นบันไดแบบ Minimal (เส้น 3 เส้นด้านล่าง) */}
+      {/* ขั้นที่ 1 */}
+      <path d="M60 150H80" stroke="#93C5FD" strokeWidth="12" strokeLinecap="round"/>
+      {/* ขั้นที่ 2 */}
+      <path d="M90 150H110" stroke="#60A5FA" strokeWidth="12" strokeLinecap="round"/>
+      {/* ขั้นที่ 3 */}
+      <path d="M120 150H140" stroke="#2563EB" strokeWidth="12" strokeLinecap="round"/>
+    </svg>
+  );
+};
+
+export default TaxIconWithText;

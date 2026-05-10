@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     siteName: "TaxEase",
     images: [
       {
-        url: "/TaxEase.webp",
+        url: "/TaxEase.png",
         width: 1200,
         height: 630,
         alt: "TaxEase Logo",
