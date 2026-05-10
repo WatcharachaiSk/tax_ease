@@ -1,7 +1,7 @@
 "use client";
 
 import React, { FC, useState, useMemo, useEffect, useRef } from "react";
-import { TbPlus, TbX, TbExternalLink, TbBriefcase, TbDeviceLaptop, TbShoppingCart, TbHome, TbChartPie, TbPercentage, TbUser, TbBuildingBank, TbHeart, TbStethoscope, TbShieldCheck, TbCoins, TbChartBar, TbBuildingCommunity, TbHeartHandshake, TbSchool, TbUsers, TbBabyCarriage, TbInfoCircle } from "react-icons/tb";
+import { TbPlus, TbX, TbExternalLink, TbBriefcase, TbDeviceLaptop, TbShoppingCart, TbHome, TbChartPie, TbPercentage, TbUser, TbBuildingBank, TbHeart, TbStethoscope, TbShieldCheck, TbCoins, TbChartBar, TbBuildingCommunity, TbHeartHandshake, TbSchool, TbUsers, TbBabyCarriage, TbInfoCircle, TbHomeHeart } from "react-icons/tb";
 import { motion, AnimatePresence } from "framer-motion";
 
 import * as am5 from "@amcharts/amcharts5";
@@ -49,6 +49,8 @@ const ALL_DEDUCTION_DEFS: DeductionType[] = [
   { id: "donateEdu", icon: <TbSchool />, name: "บริจาคเพื่อการศึกษา", desc: "บริจาคให้สถานศึกษา สาธารณประโยชน์ หรือกีฬา ลดหย่อนได้ 2 เท่าของจำนวนที่จ่ายจริง", pctOfIncome: 10, maxAmt: Infinity, maxLabel: "2 เท่าของจำนวนจริง สูงสุด 10%", tag: "2 เท่า", tagColor: "amber", ref: "https://www.rd.go.th/272.html", refLabel: "กรมสรรพากร", removable: true, hasInput: true },
   { id: "spouse", icon: <TbUsers />, name: "ลดหย่อนคู่สมรส", desc: "คู่สมรสที่ไม่มีรายได้หรือรายได้น้อย สามารถหักลดหย่อนได้", fixed: 60000, maxLabel: "60,000 บาท (คงที่)", tag: "คู่สมรสไม่มีรายได้", tagColor: "gray", ref: "https://www.rd.go.th/272.html", refLabel: "กรมสรรพากร", removable: true, hasInput: false },
   { id: "child", icon: <TbBabyCarriage />, name: "ลดหย่อนบุตร", desc: "บุตรที่ชอบด้วยกฎหมาย คนที่ 1-2 ลดหย่อน 30,000 บาท/คน บุตรคนที่ 3 เป็นต้นไป 60,000 บาท/คน", fixed: 30000, maxLabel: "30,000 บาท/คน (หรือ 60,000 บาทตั้งแต่คนที่ 3)", tag: "ต่อบุตร 1 คน", tagColor: "gray", ref: "https://www.rd.go.th/272.html", refLabel: "กรมสรรพากร", removable: true, hasInput: false },
+  { id: "houseInterest", icon: <TbHomeHeart />, name: "ดอกเบี้ยเงินกู้ยืมเพื่อที่อยู่อาศัย", desc: "ดอกเบี้ยเงินกู้ยืมเพื่อซื้อหรือสร้างที่อยู่อาศัย (บ้าน, คอนโด) หักลดหย่อนได้ตามที่จ่ายจริง", maxAmt: 100000, maxLabel: "สูงสุด 100,000 บาท", tag: "ตามจริง", tagColor: "amber", ref: "https://www.rd.go.th/272.html", refLabel: "กรมสรรพากร", removable: true, hasInput: true },
+  // { id: "houseConstruction", icon: <TbHomePlus />, name: "ค่าสร้างบ้านใหม่ (2567-2568)", desc: "ลดหย่อนได้ 10,000 บาท ต่อค่าก่อสร้างทุก 1 ล้านบาท (สัญญาจ้างช่วง 9 เม.ย. 67 - 31 ธ.ค. 68)", maxAmt: 100000, maxLabel: "สูงสุด 100,000 บาท", tag: "10,000 ต่อ 1 ล้าน", tagColor: "blue", ref: "https://www.rd.go.th/71618.html", refLabel: "กรมสรรพากร", removable: true, hasInput: true },
 ];
 
 // --- Helper Functions ---
@@ -99,7 +101,11 @@ const TaxCard: FC = () => {
       if (d.fixed) amount = d.fixed;
       else if (d.hasInput) {
         const ua = d.userAmt || 0;
-        if (d.pctOfIncome) {
+        if (d.id === "houseConstruction") {
+          // 10,000 THB per 1,000,000 THB of construction cost, max 100,000 THB
+          const calculated = Math.floor(ua / 1000000) * 10000;
+          amount = Math.min(calculated, d.maxAmt || 100000);
+        } else if (d.pctOfIncome) {
           const cap = afterExp * (d.pctOfIncome / 100);
           amount = d.maxAmt === Infinity ? Math.min(ua, cap) : Math.min(ua, cap, d.maxAmt || 0);
         } else {
