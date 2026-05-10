@@ -19,6 +19,9 @@ export const metadata: Metadata = {
   description: "เครื่องมือคำนวณภาษีเงินได้บุคคลธรรมดา ช่วยวางแผนภาษี คำนวณค่าลดหย่อน และสรุปยอดภาษีที่ต้องจ่ายอย่างมืออาชีพ",
   keywords: ["คำนวณภาษี", "ภาษีเงินได้", "วางแผนภาษี", "ลดหย่อนภาษี", "Tax Calculator Thailand"],
   authors: [{ name: "TaxEase Team" }],
+  verification: {
+    google: "cj3Q48HyW78r_hEFLNNcldXrtr_4Qf1WF9io9W_Wnlc",
+  },
   openGraph: {
     title: "TaxEase - คำนวณภาษีเงินได้บุคคลธรรมดา",
     description: "คำนวณภาษีง่ายๆ พร้อมตัวช่วยวางแผนค่าลดหย่อน",
